@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Панель</title>
+    <meta name="description" content="Рассыльщик Панель">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(180deg, #0a1a2e, #1e3a5f);
+            color: #e8eaed;
+            font-family: 'Orbitron', sans-serif;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background: linear-gradient(90deg, #5e4bff, #00c4ff);
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-100vh); opacity: 0.8; }
+            100% { transform: translateY(100vh) translateX(20px); opacity: 0; }
+        }
+
+        .div {
+            background: rgba(20, 30, 50, 0.85);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 0 20px rgba(0, 123, 255, 0.3);
+            backdrop-filter: blur(5px);
+            max-width: 400px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .h1 {
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            background: linear-gradient(90deg, #5e4bff, #00c4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .label {
+            color: #e8eaed;
+            font-size: 14px;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .select {
+            background: rgba(30, 40, 60, 0.9);
+            color: #e8eaed;
+            border-radius: 10px;
+            border: 1px solid #5e4bff;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .select2-container--default .select2-selection--multiple {
+            background: rgba(30, 40, 60, 0.9);
+            border: 1px solid #5e4bff;
+            border-radius: 10px;
+            color: #e8eaed;
+        }
+
+        .select2-selection__rendered {
+            max-height: 100px;
+            overflow-y: auto;
+            background: transparent;
+            color: #e8eaed;
+            padding: 5px;
+        }
+
+        .select2-results {
+            background: rgba(20, 30, 50, 0.95);
+            color: #e8eaed;
+        }
+
+        .select2-search input {
+            background: rgba(20, 30, 50, 0.95);
+            color: #e8eaed;
+            border: 1px solid #5e4bff;
+        }
+
+        .select2-search {
+            background: transparent;
+        }
+
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background: linear-gradient(45deg, #5e4bff, #00c4ff);
+            color: #fff;
+        }
+
+        .input {
+            background: rgba(30, 40, 60, 0.9);
+            border-radius: 10px;
+            border: 1px solid #5e4bff;
+            padding: 10px;
+            margin-top: 5px;
+            width: 100%;
+            color: #e8eaed;
+            font-size: 14px;
+            outline: none;
+            box-sizing: border-box;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .input:focus {
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+        }
+
+        .button {
+            background: linear-gradient(45deg, #5e4bff, #00c4ff);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            width: 100%;
+            margin-top: 15px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.3s;
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+        }
+
+        .button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
+        }
+
+        .button:active {
+            background: linear-gradient(45deg, #3a2bff, #0086b3);
+        }
+
+        .button.stop {
+            background: linear-gradient(45deg, #ff4b4b, #cc1f00);
+        }
+
+        .button.stop:hover {
+            box-shadow: 0 0 15px rgba(255, 75, 75, 0.5);
+        }
+
+        @media (max-width: 400px) {
+            .div {
+                padding: 15px;
+            }
+
+            .h1 {
+                font-size: 22px;
+            }
+
+            .button {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            .input, .select {
+                font-size: 12px;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    <div class="div">
+        <h1 class="h1">Панель</h1>
+        <label class="label">Выберите группы</label>
+        <select class="select" id="groups" multiple="multiple"></select>
+        <label class="label">Задержка между сообщениями (сек)</label>
+        <input class="input" id="cooldown" placeholder="Введите задержку">
+        <label class="label">Текст для отправки (поддержка HTML)</label>
+        <input class="input" id="text" placeholder="Введите текст">
+        <button class="button" id="send">Отправить</button>
+        <button class="button" id="update">Обновить список групп</button>
+    </div>
+    <script>
+
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 20; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                star.style.width = `${Math.random() * 3 + 1}px`;
+                star.style.height = star.style.width;
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                star.style.animationDelay = `${Math.random() * 2}s`;
+                starsContainer.appendChild(star);
+            }
+        }
+        createStars();
+
+        $(document).ready(function() {
+            $('#groups').select2({
+                closeOnSelect: false,
+                placeholder: "Выберите группы",
+                allowClear: true
+            });
+        });
+
+        const groups_select = document.getElementById('groups');
+        const cooldown = document.getElementById('cooldown');
+        const send = document.getElementById('send');
+        const text = document.getElementById('text');
+        const update = document.getElementById('update');
+
+        function add_elements() {
+            fetch('/get_groups')
+                .then(response => response.json())
+                .then(all_groups => {
+                    groups_select.innerHTML = '';
+                    for (let i = 0; i < all_groups.length; i++) {
+                        const option_group = document.createElement('option');
+                        option_group.value = all_groups[i][1];
+                        option_group.textContent = all_groups[i][0];
+                        groups_select.appendChild(option_group);
+                    }
+                    $('#groups').trigger('change'); // Обновить Select2
+                })
+                .catch(err => console.error('Ошибка загрузки групп:', err));
+        }
+
+        update.addEventListener('click', () => {
+            add_elements();
+        });
+
+        function checksending() {
+            fetch('/get_info')
+                .then(response => response.json())
+                .then(info => {
+                    if (info['sending']) {
+                        setTimeout(checksending, 1000);
+                    } else {
+                        send.classList.remove('stop');
+                        send.textContent = 'Отправить';
+                    }
+                })
+                .catch(err => console.error('Ошибка проверки статуса:', err));
+        }
+
+        add_elements();
+
+        send.addEventListener('click', () => {
+            if (send.textContent === 'Отправить') {
+                const selected_cooldown = cooldown.value;
+                const selected_groups = $('#groups').select2('data');
+                const text_to_send = text.value;
+
+                if (isNaN(selected_cooldown) || isNaN(parseFloat(selected_cooldown)) || Number(selected_cooldown) < 0) {
+                    alert('Вы не ввели правильную задержку');
+                    return;
+                }
+                if ($('#groups option:selected').length === 0) {
+                    alert('Вы не выбрали группы');
+                    return;
+                }
+                if (text_to_send.trim() === '') {
+                    alert('Вы не ввели текст');
+                    return;
+                }
+
+                send.classList.add('stop');
+                send.textContent = 'Остановить';
+
+                fetch('/send_messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        groups: selected_groups,
+                        cooldown: selected_cooldown,
+                        text: text_to_send
+                    })
+                })
+                    .then(response => response.json())
+                    .then(r => {
+                        send.classList.remove('stop');
+                        send.textContent = 'Отправить';
+                    })
+                    .catch(err => {
+                        console.error('Ошибка отправки:', err);
+                        send.classList.remove('stop');
+                        send.textContent = 'Отправить';
+                    });
+            } else {
+                fetch('/stop_sending')
+                    .then(response => response.json())
+                    .then(r => {
+                        send.classList.remove('stop');
+                        send.textContent = 'Отправить';
+                    })
+                    .catch(err => console.error('Ошибка остановки:', err));
+            }
+        });
+
+        fetch('/get_info')
+            .then(response => response.json())
+            .then(info => {
+                cooldown.value = info['cooldown'];
+                text.value = info['text'];
+                if (info['sending']) {
+                    send.classList.add('stop');
+                    send.textContent = 'Остановить';
+                    checksending();
+                }
+            })
+            .catch(err => console.error('Ошибка загрузки данных:', err));
+    </script>
+</body>
+</html>
